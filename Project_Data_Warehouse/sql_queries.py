@@ -59,7 +59,7 @@ REGION 'us-west-2';
 
 # FINAL TABLES
 
-songplay_table_insert = ("""INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent) SELECT ts as start_time, userId as user_id, level, song_id, artist_id, sessionID as session_id, location, userAgent as user_agent FROM staging_events LEFT JOIN staging_songs ON staging_events.artist=staging_songs.artist_name AND staging_events.song=staging_songs.title AND staging_events.length=staging_songs.duration;
+songplay_table_insert = ("""INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent) SELECT DISTINCT ts as start_time, userId as user_id, level, song_id, artist_id, sessionID as session_id, location, userAgent as user_agent FROM staging_events RIGHT JOIN staging_songs ON staging_events.artist=staging_songs.artist_name AND staging_events.song=staging_songs.title AND staging_events.length=staging_songs.duration;
 """)
 
 user_table_insert = ("""INSERT INTO users (user_id, first_name, last_name, gender, level) SELECT DISTINCT userId, firstName, lastName, gender, level FROM staging_events;
@@ -76,10 +76,9 @@ time_table_insert = ("""INSERT INTO time (start_time, hour, day, week, month, ye
 """)
 # QUERY LISTS
 
-create_table_queries = [staging_events_table_create, staging_songs_table_create, songplay_table_create,
-                        user_table_create, song_table_create, artist_table_create, time_table_create]
-drop_table_queries = [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop, user_table_drop,
-                      song_table_drop, artist_table_drop, time_table_drop]
-copy_table_queries = [staging_events_copy, staging_songs_copy]
-insert_table_queries = [songplay_table_insert, user_table_insert, song_table_insert, artist_table_insert,
-                        time_table_insert]
+# create_table_queries = [staging_events_table_create, staging_songs_table_create, songplay_table_create,
+#                         user_table_create, song_table_create, artist_table_create, time_table_create]
+create_table_queries = [songplay_table_create]
+drop_table_queries = [songplay_table_drop]
+copy_table_queries = [staging_events_copy]
+insert_table_queries = [songplay_table_insert]
