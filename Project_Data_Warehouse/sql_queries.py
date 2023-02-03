@@ -1,6 +1,5 @@
 import configparser
 
-
 # CONFIG
 config = configparser.ConfigParser()
 config.read('dwh.cfg')
@@ -16,7 +15,7 @@ artist_table_drop = "DROP TABLE IF EXISTS ARTISTS"
 time_table_drop = "DROP TABLE IF EXISTS TIME"
 
 # CREATE TABLES
-staging_events_table_create= ("""CREATE TABLE staging_events (artist VARCHAR, auth VARCHAR, firstName VARCHAR, gender VARCHAR, itemInSession int, lastName VARCHAR, length float, level VARCHAR, location VARCHAR, method VARCHAR, page VARCHAR, registration VARCHAR, sessionId VARCHAR, song VARCHAR, status VARCHAR, ts bigint, userAgent VARCHAR, userId VARCHAR);
+staging_events_table_create = ("""CREATE TABLE staging_events (artist VARCHAR, auth VARCHAR, firstName VARCHAR, gender VARCHAR, itemInSession int, lastName VARCHAR, length float, level VARCHAR, location VARCHAR, method VARCHAR, page VARCHAR, registration VARCHAR, sessionId VARCHAR, song VARCHAR, status VARCHAR, ts bigint, userAgent VARCHAR, userId VARCHAR);
 """)
 
 # artist:artist_name
@@ -42,27 +41,28 @@ time_table_create = ("""CREATE TABLE time (start_time TIMESTAMP, hour int, day i
 
 # STAGING TABLES
 
-staging_events_copy = ("""COPY staging_events FROM 's3://udacity-dend/log_data'
-IAM_ROLE 'arn:aws:iam::432547830124:role/myRedshiftRole'
-JSON 's3://udacity-dend/log_json_path.json'
+staging_events_copy = ("""COPY staging_events FROM {}
+IAM_ROLE {}
+JSON {}
 region 'us-west-2'
 dateformat 'auto'
 timeformat as 'auto';
-""")
+""").format(config.get('S3','LOG_DATA'), config.get('IAM_ROLE','ARN'),
+            config.get('S3','LOG_JSONPATH'))
 
 staging_songs_copy = ("""
-COPY staging_songs FROM 's3://udacity-dend/song_data'
-CREDENTIALS 'aws_iam_role={}'
+COPY staging_songs FROM {}
+IAM_ROLE {}
 FORMAT AS JSON 'auto'
 REGION 'us-west-2';
-""").format('arn:aws:iam::432547830124:role/myRedshiftRole')
+""").format(config.get('S3','SONG_DATA'), config.get('IAM_ROLE','ARN'))
 
 # FINAL TABLES
 
 songplay_table_insert = ("""INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent) SELECT ts as start_time, userId as user_id, level, song_id, artist_id, sessionID as session_id, location, userAgent as user_agent FROM staging_events LEFT JOIN staging_songs ON staging_events.artist=staging_songs.artist_name AND staging_events.song=staging_songs.title AND staging_events.length=staging_songs.duration;
 """)
 
-user_table_insert = ("""INSERT INTO users (user_id, first_name, last_name, gender, level) SELECT userId, firstName, lastName, gender, level FROM staging_events;
+user_table_insert = ("""INSERT INTO users (user_id, first_name, last_name, gender, level) SELECT DISTINCT userId, firstName, lastName, gender, level FROM staging_events;
 """)
 
 song_table_insert = ("""INSERT INTO songs (song_id, title, artist_id, year, duration) SELECT song_id, title, artist_id, year, duration from staging_songs;
@@ -76,7 +76,10 @@ time_table_insert = ("""INSERT INTO time (start_time, hour, day, week, month, ye
 """)
 # QUERY LISTS
 
-create_table_queries = [staging_events_table_create, staging_songs_table_create, songplay_table_create, user_table_create, song_table_create, artist_table_create, time_table_create]
-drop_table_queries = [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop, user_table_drop, song_table_drop, artist_table_drop, time_table_drop]
+create_table_queries = [staging_events_table_create, staging_songs_table_create, songplay_table_create,
+                        user_table_create, song_table_create, artist_table_create, time_table_create]
+drop_table_queries = [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop, user_table_drop,
+                      song_table_drop, artist_table_drop, time_table_drop]
 copy_table_queries = [staging_events_copy, staging_songs_copy]
-insert_table_queries = [songplay_table_insert, user_table_insert, song_table_insert, artist_table_insert,time_table_insert]
+insert_table_queries = [songplay_table_insert, user_table_insert, song_table_insert, artist_table_insert,
+                        time_table_insert]
