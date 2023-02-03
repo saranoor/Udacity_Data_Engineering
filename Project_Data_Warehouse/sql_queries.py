@@ -42,25 +42,20 @@ time_table_create = ("""CREATE TABLE time (start_time TIMESTAMP, hour int, day i
 
 # STAGING TABLES
 
-# staging_events_copy = ("""COPY staging_events FROM {} IAM_ROLE {} JSON 's3://udacity-dend/jsonpaths_songs.json' region 'us-west-2';
-# """).format('s3://udacity-dend/log_data','arn:aws:iam::402571184910:role/myRedshiftRole')
 staging_events_copy = ("""COPY staging_events FROM 's3://udacity-dend/log_data'
-IAM_ROLE 'arn:aws:iam::402571184910:role/myRedshiftRole'
+IAM_ROLE 'arn:aws:iam::432547830124:role/myRedshiftRole'
 JSON 's3://udacity-dend/log_json_path.json'
 region 'us-west-2'
 dateformat 'auto'
 timeformat as 'auto';
 """)
 
-# staging_songs_copy = ("""COPY staging_songs FROM 's3://udacity-dend/song_data' credentials 'aws_iam_role=arn:aws:iam::402571184910:user/redshift_user'
-# gzip region 'us-west-2';
-# """).format()
 staging_songs_copy = ("""
 COPY staging_songs FROM 's3://udacity-dend/song_data'
 CREDENTIALS 'aws_iam_role={}'
 FORMAT AS JSON 'auto'
 REGION 'us-west-2';
-""").format('arn:aws:iam::402571184910:role/myRedshiftRole')
+""").format('arn:aws:iam::432547830124:role/myRedshiftRole')
 
 # FINAL TABLES
 
@@ -81,7 +76,7 @@ time_table_insert = ("""INSERT INTO time (start_time, hour, day, week, month, ye
 """)
 # QUERY LISTS
 
-create_table_queries = [time_table_create]
-drop_table_queries = [time_table_drop]
+create_table_queries = [staging_events_table_create, staging_songs_table_create, songplay_table_create, user_table_create, song_table_create, artist_table_create, time_table_create]
+drop_table_queries = [staging_events_table_drop, staging_songs_table_drop, songplay_table_drop, user_table_drop, song_table_drop, artist_table_drop, time_table_drop]
 copy_table_queries = [staging_events_copy, staging_songs_copy]
-insert_table_queries = [time_table_insert]#, songplay_table_insert, user_table_insert, song_table_insert, artist_table_insert]
+insert_table_queries = [songplay_table_insert, user_table_insert, song_table_insert, artist_table_insert,time_table_insert]
