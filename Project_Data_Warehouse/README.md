@@ -16,6 +16,9 @@ information i.e information about artist, users, time, and songs.
 online analytical processing (OLAP) and is optimized for querying large data sets. In star schema it is easier to aggregate information.
 
 #### ETL Design 
+ETL pipeline created can be visualised using the figure shown. First we connect to S3 bucket and copy the files related to staging events and songs data
+into Redshift usign SQL queries written with Python wrapper. Next, usign the loaded data we insert information into our start based schema table.
+
 ![alt text](etl_design.png?raw=true)
 
 #### Setup 
