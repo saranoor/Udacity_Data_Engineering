@@ -59,26 +59,29 @@ REGION 'us-west-2';
 
 # FINAL TABLES
 
-songplay_table_insert = ("""INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent) SELECT DISTINCT ts as start_time, userId as user_id, level, song_id, artist_id, sessionID as session_id, location, userAgent as user_agent FROM staging_events RIGHT JOIN staging_songs ON staging_events.artist=staging_songs.artist_name AND staging_events.song=staging_songs.title AND staging_events.length=staging_songs.duration;
+songplay_table_insert = ("""INSERT INTO songplays (start_time, user_id, level, song_id, artist_id, session_id, location, user_agent) SELECT ts as start_time, userId as user_id, level, song_id, artist_id, sessionID as session_id, location, userAgent as user_agent 
+FROM staging_events LEFT JOIN staging_songs 
+ON staging_events.artist=staging_songs.artist_name AND staging_events.song=staging_songs.title AND staging_events.length=staging_songs.duration 
+WHERE staging_events.artist IS NOT NULL  AND staging_events.artist IS NOT NULL;
 """)
 
-user_table_insert = ("""INSERT INTO users (user_id, first_name, last_name, gender, level) SELECT DISTINCT userId, firstName, lastName, gender, level FROM staging_events;
+user_table_insert = ("""INSERT INTO users (user_id, first_name, last_name, gender, level) SELECT DISTINCT userId, firstName, lastName, gender, level FROM staging_events 
+where staging_events.firstname is not null AND staging_events.lastname  is not null;;
 """)
 
-song_table_insert = ("""INSERT INTO songs (song_id, title, artist_id, year, duration) SELECT song_id, title, artist_id, year, duration from staging_songs;
+song_table_insert = ("""INSERT INTO songs (song_id, title, artist_id, year, duration) SELECT DISTINCT song_id, title, artist_id, year, duration from staging_songs;
 """)
 
-artist_table_insert = ("""INSERT INTO artists (artist_id, name, location, latitutde, longitude) SELECT artist_id, artist_name, artist_location, artist_latitude, artist_longitude from staging_songs;
+artist_table_insert = ("""INSERT INTO artists (artist_id, name, location, latitutde, longitude) SELECT DISTINCT artist_id, artist_name, artist_location, artist_latitude, artist_longitude from staging_songs;
 """)
-# time_table_insert = ("""INSERT INTO time (start_time, hour, day, week, month, year, weekday) SELECT distinct (TIMESTAMP 'epoch' + start_time* INTERVAL '1 Second ') as s_time, date_part('hour', to_timestamp(s_time)), date_part('day', to_timestamp(start_time)), date_part('week', to_timestamp(start_time)), date_part('month', to_timestamp(start_time)), date_part('year', to_timestamp(start_time)), date_part('weekday', to_timestamp(start_time)) from songplays;
-# """)
+
 time_table_insert = ("""INSERT INTO time (start_time, hour, day, week, month, year, weekday) select distinct timestamp 'epoch' + start_time/1000 * interval '1 second' as st, date_part('hour', st), date_part('day', st), date_part('week', st), date_part('month', st), date_part('year', st), date_part('weekday', st) from songplays;
 """)
+
 # QUERY LISTS
 
-# create_table_queries = [staging_events_table_create, staging_songs_table_create, songplay_table_create,
-#                         user_table_create, song_table_create, artist_table_create, time_table_create]
-create_table_queries = [songplay_table_create]
-drop_table_queries = [songplay_table_drop]
-copy_table_queries = [staging_events_copy]
-insert_table_queries = [songplay_table_insert]
+create_table_queries = [user_table_create, song_table_create, artist_table_create, time_table_create]
+#create_table_queries = [songplay_table_create]
+drop_table_queries = [user_table_drop, song_table_drop, artist_table_drop, time_table_drop]
+copy_table_queries = [staging_events_copy, staging_songs_copy]
+insert_table_queries = [user_table_insert, song_table_insert, artist_table_insert, time_table_insert]
