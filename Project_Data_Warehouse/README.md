@@ -14,7 +14,8 @@ is about song and the activity of the user. So songplays table store the unique 
 information i.e information about artist, users, time, and songs.
 - Also since the database needs to used for analytical purposes by Sparkify team, star schema is a reasonable choice as it supports
 online analytical processing (OLAP) and is optimized for querying large data sets. In star schema it is easier to aggregate information.
-![alt text]schema_design.JPG?raw=true)
+
+![alt text](schema_design.JPG?raw=true)
 
 #### ETL Design 
 ETL pipeline created can be visualised using the figure shown. First we connect to S3 bucket and copy the files related to staging events and songs data
