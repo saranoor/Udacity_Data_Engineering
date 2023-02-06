@@ -16,6 +16,7 @@ information i.e information about artist, users, time, and songs.
 online analytical processing (OLAP) and is optimized for querying large data sets. In star schema it is easier to aggregate information.
 
 #### ETL Design 
+![alt text](etl_design.png?raw=true)
 
 #### Setup 
 
