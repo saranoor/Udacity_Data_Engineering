@@ -19,7 +19,7 @@ CustomerLanding_node1 = glueContext.create_dynamic_frame.from_options(
     connection_type="s3",
     format="json",
     connection_options={
-        "paths": ["s3://project-lake-house/customer/trusted/"],
+        "paths": ["s3://project-lake-house/customer/landing/"],
         "recurse": True,
     },
     transformation_ctx="CustomerLanding_node1",
