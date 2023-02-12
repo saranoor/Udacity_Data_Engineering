@@ -13,9 +13,14 @@ job = Job(glueContext)
 job.init(args["JOB_NAME"], args)
 
 # Script generated for node Customer Trusted
-CustomerTrusted_node1676205835323 = glueContext.create_dynamic_frame.from_catalog(
-    database="stedi",
-    table_name="customer_trusted",
+CustomerTrusted_node1676205835323 = glueContext.create_dynamic_frame.from_options(
+    format_options={"multiline": False},
+    connection_type="s3",
+    format="json",
+    connection_options={
+        "paths": ["s3://project-lake-house/customer/landing/"],
+        "recurse": True,
+    },
     transformation_ctx="CustomerTrusted_node1676205835323",
 )
 
@@ -38,17 +43,7 @@ JoinCustomer_node2 = Join.apply(
 # Script generated for node Drop Fields
 DropFields_node1676206337795 = DropFields.apply(
     frame=JoinCustomer_node2,
-    paths=[
-        "serialnumber",
-        "sharewithpublicasofdate",
-        "birthday",
-        "registrationdate",
-        "sharewithresearchasofdate",
-        "customername",
-        "email",
-        "lastupdatedate",
-        "phone",
-    ],
+    paths=["email", "phone"],
     transformation_ctx="DropFields_node1676206337795",
 )
 
