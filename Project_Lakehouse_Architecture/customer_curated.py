@@ -38,7 +38,7 @@ JoinCustomer_node2 = Join.apply(
 # Script generated for node Drop Fields
 DropFields_node1676206337795 = DropFields.apply(
     frame=JoinCustomer_node2,
-    paths=["user", "x", "y", "z"],
+    paths=["user", "x", "y", "z", "timestamp"],
     transformation_ctx="DropFields_node1676206337795",
 )
 
