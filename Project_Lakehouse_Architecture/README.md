@@ -1,8 +1,10 @@
-### Project: Lakehouse Architecture (to build a data lakehouse solution for sensor data that trains a ML model)
-Using AWS Glue, AWS S3, Python, and Spark, create or generate Python scripts to build a lakehouse solution in AWS that satisfies these requirements from the STEDI data scientists.
-As a data engineer on the STEDI Step Trainer team, you'll need to extract the data produced by the STEDI Step Trainer sensors and the mobile app, and curate them into a data lakehouse solution on AWS so that Data Scientists can train the learning model.
+### Project: Lakehouse Architecture
+#### Goal: 
+To build a data lakehouse solution for sensor data that trains a ML model)
+#### Project Summary: 
+Using AWS Glue, AWS S3, Python, and Spark, create or generate Python scripts to build a lakehouse solution in AWS that satisfies these requirements from the STEDI data scientists. As a data engineer on the STEDI Step Trainer team, you'll need to extract the data produced by the STEDI Step Trainer sensors and the mobile app, and curate them into a data lakehouse solution on AWS so that Data Scientists can train the learning model.
 
-### Project Details
+### Project Details:
 The STEDI Team has been hard at work developing a hardware STEDI Step Trainer that:
 
 trains the user to do a STEDI balance exercise;
